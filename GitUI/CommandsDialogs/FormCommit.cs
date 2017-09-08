@@ -130,6 +130,8 @@ namespace GitUI.CommandsDialogs
         private bool IsMergeCommit { get; set; }
         private bool _shouldRescanChanges = true;
         private bool _shouldReloadCommitTemplates = true;
+        private bool _shouldReloadMdCommitTypes = true;
+        private bool _shouldReloadMdModules = true;
         private readonly AsyncLoader _unstagedLoader;
         private readonly bool _useFormCommitMessage;
         private CancellationTokenSource _interactiveAddBashCloseWaitCts = new CancellationTokenSource();
@@ -1342,7 +1344,7 @@ namespace GitUI.CommandsDialogs
             {
                 _currentFilesList = Staged;
                 _skipUpdate = false;
-                if(Staged.AllItems.Count() != 0 && Staged.SelectedIndex == -1)
+                if (Staged.AllItems.Count() != 0 && Staged.SelectedIndex == -1)
                 {
                     Staged.SelectedIndex = 0;
                 }
@@ -2527,6 +2529,102 @@ namespace GitUI.CommandsDialogs
             commitTemplatesToolStripMenuItem.DropDownItems.Add(toolStripItem);
         }
 
+        private Dictionary<string, string> CommitTypesDict = new Dictionary<string, string>{
+            { "feat", "特性" },
+            { "fix", "Bug 修复" },
+            { "refactor", "非功能性重构" },
+            { "perf", "性能优化" },
+            { "build", "构建系统/脚本" },
+            { "style", "代码风格调整" },
+            { "test", "单元测试" },
+            { "docs", "文档" },
+        };
+        private Regex MdCommitMessageRegex
+        {
+            get { return new Regex("^" + $"({string.Join("|", CommitTypesDict.Keys.ToArray())})" + @"\((.+)\): (.*)"); }
+        }
+        private void LoadMdCommitTypes()
+        {
+            mdSelectCommitTypeToolStripMenuItem.DropDownItems.Clear();
+
+            foreach (var pair in CommitTypesDict)
+            {
+                var toolStripItem = new ToolStripMenuItem { Text = pair.Value, Tag = pair.Key };
+                toolStripItem.Click += mdSelectCommitTypesStripMenuItem_Clicked;
+                mdSelectCommitTypeToolStripMenuItem.DropDownItems.Add(toolStripItem);
+            }
+        }
+        private void mdSelectCommitTypesStripMenuItem_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                var match = MdCommitMessageRegex.Match(Message.Text);
+                var type = item.Tag as string;
+                if (match.Success)
+                {
+                    Message.Text = $"{type}({match.Groups[2].Value}): {match.Groups[3].Value}";
+                }
+                else
+                {
+                    Message.Text = $"{type}(未填写模块): {Message.Text}";
+                }
+                Message.Focus();
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        private void LoadMdModules()
+        {
+            mdSelectModuleToolStripMenuItem.DropDownItems.Clear();
+
+            foreach (var moduleName in new[] {
+                "基础设施",
+                "ming-ui",
+                "Inbox",
+                "聊天",
+                "动态",
+                "任务",
+                "日程",
+                "知识",
+                "审批",
+                "考勤",
+                "档案",
+                "应用",
+                "其他",
+            })
+            {
+                var toolStripItem = new ToolStripMenuItem { Text = moduleName, Tag = moduleName };
+                toolStripItem.Click += mdSelectModulesToolStripMenuItem_Clicked;
+                mdSelectModuleToolStripMenuItem.DropDownItems.Add(toolStripItem);
+            }
+        }
+        private void mdSelectModulesToolStripMenuItem_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                var match = MdCommitMessageRegex.Match(Message.Text);
+                var scope = item.Tag as string;
+                if (match.Success)
+                {
+                    Message.Text = $"{match.Groups[1].Value}({scope}): {match.Groups[3].Value}";
+                }
+                else
+                {
+                    Message.Text = $"{match.Groups[1].Value}({scope}): {Message.Text}";
+                }
+                Message.Focus();
+            }
+            catch
+            {
+                return;
+            }
+        }
+
         private void AddTemplateCommitMessageToMenu(CommitTemplateItem item, string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -2564,6 +2662,24 @@ namespace GitUI.CommandsDialogs
             {
                 LoadCommitTemplates();
                 _shouldReloadCommitTemplates = false;
+            }
+        }
+
+        private void mdSelectCommitTypeToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            if (_shouldReloadMdCommitTypes)
+            {
+                LoadMdCommitTypes();
+                _shouldReloadMdCommitTypes = false;
+            }
+        }
+
+        private void mdSelectModuleToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            if (_shouldReloadMdModules)
+            {
+                LoadMdModules();
+                _shouldReloadMdModules = false;
             }
         }
 
@@ -2680,7 +2796,7 @@ namespace GitUI.CommandsDialogs
 
         private void Message_Enter(object sender, EventArgs e)
         {
-            if(Staged.AllItems.Count() != 0 && !Staged.SelectedItems.Any())
+            if (Staged.AllItems.Count() != 0 && !Staged.SelectedItems.Any())
             {
                 _currentFilesList = Staged;
                 Staged.SelectedIndex = 0;

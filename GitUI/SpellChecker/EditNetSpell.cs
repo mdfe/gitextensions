@@ -85,6 +85,15 @@ namespace GitUI.SpellChecker
             }
         }
 
+        public new void Focus()
+        {
+            base.Focus();
+            if (TextBox.SelectionLength == 0)
+            {
+                TextBox.SelectionStart = TextBox.Text.Length;
+            }
+        }
+
         private void OnTextAssigned()
         {
             if (TextAssigned != null)

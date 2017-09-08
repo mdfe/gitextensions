@@ -136,6 +136,8 @@ namespace GitUI.CommandsDialogs
             this.toolAuthor = new System.Windows.Forms.ToolStripTextBox();
             this.noVerifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitTemplatesToolStripMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mdSelectCommitTypeToolStripMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mdSelectModuleToolStripMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
             this.createBranchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.commitStatusStrip = new System.Windows.Forms.StatusStrip();
             this.commitAuthorStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -474,7 +476,7 @@ namespace GitUI.CommandsDialogs
             this.toolStripSeparator16,
             this.copyFolderNameMenuItem});
             this.UnstagedSubmoduleContext.Name = "UnstagedFileContext";
-            this.UnstagedSubmoduleContext.Size = new System.Drawing.Size(229, 264);
+            this.UnstagedSubmoduleContext.Size = new System.Drawing.Size(229, 242);
             // 
             // commitSubmoduleChanges
             // 
@@ -1177,6 +1179,8 @@ namespace GitUI.CommandsDialogs
             this.toolbarCommit.ClickThrough = true;
             this.toolbarCommit.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolbarCommit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mdSelectCommitTypeToolStripMenuItem,
+            this.mdSelectModuleToolStripMenuItem,
             this.commitMessageToolStripMenuItem,
             this.toolStripMenuItem3,
             this.commitTemplatesToolStripMenuItem,
@@ -1297,6 +1301,24 @@ namespace GitUI.CommandsDialogs
             this.commitTemplatesToolStripMenuItem.Size = new System.Drawing.Size(135, 20);
             this.commitTemplatesToolStripMenuItem.Text = "Commit &templates";
             this.commitTemplatesToolStripMenuItem.DropDownOpening += new System.EventHandler(this.commitTemplatesToolStripMenuItem_DropDownOpening);
+            // 
+            // mdSelectCommitTypeToolStripMenuItem
+            // 
+            this.mdSelectCommitTypeToolStripMenuItem.Image = global::GitUI.Properties.Resources.Icon_33;
+            this.mdSelectCommitTypeToolStripMenuItem.Name = "mdSelectCommitTypeToolStripMenuItem";
+            this.mdSelectCommitTypeToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.mdSelectCommitTypeToolStripMenuItem.Size = new System.Drawing.Size(135, 20);
+            this.mdSelectCommitTypeToolStripMenuItem.Text = "提交类型";
+            this.mdSelectCommitTypeToolStripMenuItem.DropDownOpening += new System.EventHandler(this.mdSelectCommitTypeToolStripMenuItem_DropDownOpening);
+            // 
+            // mdSelectModuleToolStripMenuItem
+            // 
+            this.mdSelectModuleToolStripMenuItem.Image = global::GitUI.Properties.Resources.Options;
+            this.mdSelectModuleToolStripMenuItem.Name = "mdSelectModuleToolStripMenuItem";
+            this.mdSelectModuleToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.mdSelectModuleToolStripMenuItem.Size = new System.Drawing.Size(135, 20);
+            this.mdSelectModuleToolStripMenuItem.Text = "所属模块";
+            this.mdSelectModuleToolStripMenuItem.DropDownOpening += new System.EventHandler(this.mdSelectModuleToolStripMenuItem_DropDownOpening);
             // 
             // createBranchToolStripButton
             // 
@@ -1538,6 +1560,8 @@ namespace GitUI.CommandsDialogs
         private ToolStripSeparator toolStripMenuItem1;
         private ToolStripMenuItem generateListOfChangesInSubmodulesChangesToolStripMenuItem;
         private ToolStripDropDownButton commitTemplatesToolStripMenuItem;
+        private ToolStripDropDownButton mdSelectCommitTypeToolStripMenuItem;
+        private ToolStripDropDownButton mdSelectModuleToolStripMenuItem;
         private ToolStripMenuItem openContainingFolderToolStripMenuItem;
         private ToolStripMenuItem signOffToolStripMenuItem;
         private ContextMenuStrip StagedFileContext;
